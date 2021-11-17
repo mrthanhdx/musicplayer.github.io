@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music player</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<div class="player">
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <!-- Header -->
+    <header>
+      <h4>Music Player:</h4>
+      <h2>String 57th & 9th</h2>
+    </header>
+
+    <!-- CD -->
+    <div class="cd">
+      <div class="cd-thumb">
+      </div>
+    </div>
+
+    <!-- Control -->
+    <div class="control">
+      <div class="btn btn-repeat">
+        <i class="fas fa-redo"></i>
+      </div>
+      <div class="btn btn-prev">
+        <i class="fas fa-step-backward"></i>
+      </div>
+      <div class="btn btn-toggle-play">
+        <i class="fas fa-pause icon-pause"></i>
+        <i class="fas fa-play icon-play"></i>
+      </div>
+      <div class="btn btn-next">
+        <i class="fas fa-step-forward"></i>
+      </div>
+      <div class="btn btn-random">
+        <i class="fas fa-random"></i>
+      </div>
+    </div>
+
+    <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+
+    <audio id="audio" src=""></audio>
+  </div>
+
+  <!-- Playlist -->
+  <div class="playlist">
+    <div class="song">
+      <div class="thumb" style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
+      </div>
+      <div class="body">
+        <h3 class="title">Music name</h3>
+        <p class="author">Singer</p>
+      </div>
+      <div class="option">
+        <i class="fas fa-ellipsis-h"></i>
+      </div>
+    </div>
+    
+<script>
+  
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
+const heading = $('header h2')
+const cdThumb = $('.cd-thumb')
+const audio = $('#audio')
+const cd = $('.cd')
+const btnPlay = $('.btn-toggle-play')
+const player = $('.player')
+const progress = $('#progress')
+const next_Btn = $('.btn-next')
+const prev_Btn = $('.btn-prev')
+const randomBtn= $('.btn-random')
+const repeatBtn= $('.btn-repeat')
+const playlist = $('.playlist')
+
+
+
+
+const app = {
+  currentIndex:0,
+   isRandom : false,
+   isRepeat:false,
+  isplaying:false,
+  songs: [
+  
+    {
+      name: "Stay",
+      singer: "justin biber",
+      path: "music/The Kid LAROI - STAY (Lyrics) Ft. Justin Bieber.mp3",
+      image: "image/Justin biber-Stay.jpg"
+    },
+    {
+      name: "Faded",
+      singer: "Alan Walker",
+      path: "music/faded.mp3",
+      image:
+        "image/Faded.png"
+    },
+    {
+      name: "Bad Habits",
+      singer: "Ed Sheeran",
+      path:
+        "music/Ed Sheeran - Bad Habits (Lyrics).mp3",
+      image: "image/Bad habits.jpg"
+    },
+    {
+      name: "2002",
+      singer: "anne marie",
+      path: "music/Anne-Marie - 2002 [Official Video].mp3",
+      image:
+        "image/2002.jpg"
+    },
+    {
+      name: "there is nothing holding me back",
+      singer: "Shawn mendes",
+      path: "music/Shawn Mendes - There's Nothing Holding Me Back (Lyrics).mp3",
+      image:
+        "image/There is Nothing Holding Me Back.jpg"
+    },
+    {
+      name: "See you Again",
+      singer: "wiz Khalifa - chalie puth",
+      path:
+        "music/Wiz Khalifa - See You Again (Lyrics) ft. Charlie Puth.mp3",
+      image:
+        "image/See You Again.jpg"
+    },
+    {
+      name: "wildest Dream",
+      singer: "taylor swift",
+      path: "music/Taylor Swift - Wildest dreams (Lyrics).mp3",
+      image:
+        "image/Wildest Dream.jpg"
+    },
+    {
+      
+      name: "This Is what You Came For",
+      singer: "Rihana",
+      path: "music/Calvin Harris - This Is What You Came For (Official Video) ft. Rihanna.mp3",
+      image:
+        "image/This What You Came For.jpg"
+    
+    },
+    {
+      
+      name: "perfect",
+      singer: "ed sheeran",
+      path: "music/Ed Sheeran - Perfect (Official Music Video).mp3",
+      image:
+        "image/Perfect.jpg"
+    
+    },
+    {
+      name: "22",
+      singer: "taylor swift",
+      path: "music/Taylor Swift - 22.mp3",
+      image:
+        "image/Taylor Swift-22.jpg"
+    }
+  ],
+ // render the list song
+  render :function () {
+const htmls = this.songs.map((song,index)=>
+  `
+  <div class="song ${index===app.currentIndex?'active':''}"data-index = "${index}">
+      <div class="thumb" style="background-image: url('${song.image}')">
+      </div>
+      <div class="body">
+        <h3 class="title">${song.name}</h3>
+        <p class="author">${song.singer}</p>
+      </div>
+      <div class="option">
+        <i class="fas fa-ellipsis-h"></i>
+      </div>
+    </div>
+  `
+ 
+)
+playlist.innerHTML = htmls.join('')
+},
+//listen DOM event 
+handleEvent : function () {
+  //đĩa quay
+const cdThumbAnimate = cdThumb.animate([{transform:'rotate(360deg)'}],{
+  duration : 8000, //10 seconds
+  iterations:Infinity
+})
+cdThumbAnimate.pause()
+
+
+ const cdWidth = cd.offsetWidth
+
+document.onscroll= function () {
+ const scrollTop = window.scrollY 
+ const newCdWidth = cdWidth-scrollTop
+cd.style.width = newCdWidth > 0 ? newCdWidth+'px' : 0 
+cd.style.opacity = newCdWidth/cdWidth
+}
+//lắng nghe hành động click vào nút play
+btnPlay.onclick = ()=>{
+ if(app.isplaying){
+   audio.pause()
+ } else {
+   audio.play()
+ }
+}
+//khi play
+audio.onplay=()=>{
+  cdThumbAnimate.play()
+  app.isplaying = true
+  player.classList.add('playing')
+}
+// khi pause
+
+audio.onpause=()=>{
+  cdThumbAnimate.pause()
+
+  app.isplaying = false
+  player.classList.remove('playing')
+}
+
+
+//khi tiến độ bài hát thay đổi
+audio.ontimeupdate = function() {
+ const progressPercent = Math.floor(audio.currentTime/audio.duration*100)
+ progress.value = progressPercent
+}
+//tua bài hát
+progress.oninput =function(e) {
+ 
+  const seekSong =  audio.duration/100*e.target.value
+  audio.currentTime = seekSong
+}
+
+nextSong =function () { 
+  app.currentIndex++
+  if(app.currentIndex>=app.songs.length){
+    app.currentIndex=0
+  }
+  app.loadCurrentSong()
+}
+//next bai hat
+next_Btn.onclick = function() {
+  if(app.isRandom){
+    app.playRandomSong()
+  
+  }
+  else{ nextSong()
+ 
+  } audio.play()
+  app.render()
+  scrollToActiveSong()
+
+  
+}
+//tua ngược bài hát
+prev_Btn.onclick = function() {
+  if(app.isRandom){
+    app.playRandomSong()
+  }
+  else{ 
+    prevSong()
+
+  }
+  audio.play()
+  app.render()
+  scrollToActiveSong()
+
+  
+}
+
+
+prevSong =function () { 
+  app.currentIndex--
+  if(app.currentIndex<0){
+    app.currentIndex = app.songs.length-1
+  }
+  app.loadCurrentSong()
+}
+
+//bật chế độ phát ngẫu nhiên
+randomBtn.onclick=function() {
+app.isRandom= !app.isRandom
+randomBtn.classList.toggle('active',app.isRandom)
+}
+//bat Phát lại bài hát khi hết nhạc(repeat)
+repeatBtn.onclick=function(){
+app.isRepeat=!app.isRepeat
+repeatBtn.classList.toggle('active')
+}
+
+
+// chuyển bài khi hết nhạc
+audio.onended=function() {
+  if(app.isRepeat) {
+    audio.play()
+  }else{next_Btn.click()
+}}
+//next or prev song active to view
+scrollToActiveSong = function() {
+  setTimeout(()=>{
+    $('.song.active').scrollIntoView({
+      behavior :'smooth',
+      block :'center'
+    })
+  },300)
+}
+//play song when click
+playlist.onclick=function(e) {
+  const songElement = e.target.closest('.song:not(.active):not(.option)')
+if(songElement||e.target.closest('.option')){
+  if(songElement) {
+    app.currentIndex = Number(songElement.dataset.index)
+    app.loadCurrentSong()
+    app.render() 
+    audio.play()
+  }else if(e.target.closest('.option')) {
+    alert('Chức năng đang được xây dựng')
+  }
+}
+}
+
+
+
+
+},
+playRandomSong : function () {
+let newIndex 
+do {
+  newIndex = Math.floor(Math.random()*app.songs.length)
+} while (newIndex===app.currentIndex);
+app.currentIndex = newIndex
+app.loadCurrentSong()
+},
+//dinh nghia biến currentSong
+difineProperties: function() {
+  Object.defineProperty(this,'currentSong' ,{
+    get : function() {
+      return this.songs[app.currentIndex]
+    }
+  })
+} ,
+loadCurrentSong:function(){
+heading.textContent = app.currentSong.name;
+cdThumb.style.backgroundImage = `url('${app.currentSong.image}')`;
+audio.src = app.currentSong.path
+},
+
+  start : function() {
+ this.render()
+ this.difineProperties()
+ this.handleEvent()
+ this.loadCurrentSong()
+}
+
+}
+app.start()
+</script>
+
+
+</body>
+</html>
